@@ -4,34 +4,47 @@ import 'package:args/args.dart';
 
 void main(List<String> args) {
   var parser = ArgParser();
-  parser.addOption("path");
+  parser.addOption("sourcePath");
+  parser.addOption("assetsPath");
   var parsed = parser.parse(args);
 
-  final root = Directory(
-      "${Directory.current.path}${Platform.pathSeparator}${parsed['path']}");
+  final sourcePath = Directory(
+      "${Directory.current.path}${Platform.pathSeparator}${parsed['sourcePath']}");
+  final assetsPath = Directory(
+      "${Directory.current.path}${Platform.pathSeparator}${parsed['assetsPath']}");
 
-  final files = _findFiles(root);
-  if (files.isNotEmpty) {
-    _travel(files);
+  final assetsFiles = _findFiles(assetsPath);
+  final assetFileNames = _listAssets(assetsFiles);
+
+  final sourceFiles = _findFiles(sourcePath);
+  if (sourceFiles.isNotEmpty) {
+    _travel(sourceFiles, assetFileNames);
   } else {
     print("Nothing found !");
   }
 }
 
-_travel(List<File> files) {
+List<String> _listAssets(List<File> files) {
+  return files.map((e) => e.path.split(Platform.pathSeparator).last).toList();
+}
+
+_travel(List<File> files, List<String> assets) {
   for (var file in files) {
-    _visit(file);
+    _visitFile(file, assets);
   }
 }
 
-_visit(File file) {
+_visitFile(File file, List<String> assets) {
   var line = 0;
-  file.readAsLinesSync().forEach((element) {
-    line++;
-    if (element.contains(".png")) {
-      print("Found in line [$line]: $element");
-    }
-  });
+  final name = file.path.split(Platform.pathSeparator).last;
+  for (var asset in assets) {
+    file.readAsLinesSync().forEach((element) {
+      line++;
+      if (element.contains(asset)) {
+        print("FILE [$name]     LINE [$line]     PREVIEW [${element.trim()}]");
+      }
+    });
+  }
 }
 
 List<File> _findFiles(Directory dir) {

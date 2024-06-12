@@ -10,4 +10,5 @@ void main() {
   print(".png");
   print(".png");
   print(".png");
+  print("notification.svg");
 }
