@@ -10,13 +10,17 @@ void main(List<String> args) {
   final root = Directory(
       "${Directory.current.path}${Platform.pathSeparator}${parsed['path']}");
 
-  final dartFiles = _findFiles(root);
-  if (dartFiles.isNotEmpty) {
-    for (var file in dartFiles) {
-      _visit(file);
-    }
+  final files = _findFiles(root);
+  if (files.isNotEmpty) {
+    _travel(files);
   } else {
     print("Nothing found !");
+  }
+}
+
+_travel(List<File> files) {
+  for (var file in files) {
+    _visit(file);
   }
 }
 
