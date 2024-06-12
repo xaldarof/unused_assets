@@ -1,3 +1,3 @@
 ```dart
-dart run bin/unused_assets.dart --path lib
+dart run bin/unused_assets.dart --sourcePath lib/src --assetsPath example/assets
 ```
